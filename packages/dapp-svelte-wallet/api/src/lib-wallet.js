@@ -103,7 +103,10 @@ export function makeWallet({
   const idToOffer = makeStore('offerId');
   const idToNotifierP = makeStore('offerId');
   /** @type {Store<string, PromiseRecord<any>>} */
-  const idToOfferResultPromiseKit = makeStore('id');
+  const idToOfferResultPromiseKit = makeStore(
+    'id',
+    { passableOnly: false }, // because promise kits are not passables
+  );
 
   /** @type {WeakStore<Handle<'invitation'>, any>} */
   const invitationHandleToOfferResult = makeWeakStore('invitationHandle');
