@@ -82,7 +82,10 @@ export function makeWallet({
   /** @type {Mapping<Brand>} */
   const brandMapping = makeMapping('brand');
   /** @type {Mapping<Contact>} */
-  const contactMapping = makeMapping('contact');
+  const contactMapping = makeMapping(
+    'contact',
+    { passableOnly: false }, // because contacts have identity!
+  );
   /** @type {Mapping<Instance>} */
   const instanceMapping = makeMapping('instance');
   /** @type {Mapping<Installation>} */

@@ -25,17 +25,6 @@ const assertValue = (value, passableOnly) => {
 };
 
 /**
- * @typedef {Object} WeakStoreOptions
- * @property {boolean=} longLived Which way to optimize. True means that we
- * expect this weakStore to outlive longer than most of its keys, in which
- * case we internally use a `WeakMap`. Otherwise we internally use a `Map`.
- * Defaults to true, so please mark short lived tables explicitly
- * @property {boolean=} passableOnly transitional. Defaults to false.
- * But beware the default passableOnly will switch to true and ultimately be
- * retired.
- */
-
-/**
  * @template {Record<any, any>} K
  * @template {any} V
  * @param {string} [keyName='key']

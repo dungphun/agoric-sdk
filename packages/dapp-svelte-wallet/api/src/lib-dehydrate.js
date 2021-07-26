@@ -90,12 +90,13 @@ export const makeDehydrator = (initialUnnamedCount = 0) => {
   /**
    * @template T
    * @param {string} kind
+   * @param {Partial<StoreOptions>=} storeOptions
    * @returns {Mapping<T>}
    */
-  const makeMapping = kind => {
+  const makeMapping = (kind, storeOptions = undefined) => {
     assert.typeof(kind, 'string', X`kind ${kind} must be a string`);
     /** @type {Store<T, string>} */
-    const rawValToPetname = makeStore('value');
+    const rawValToPetname = makeStore('value', storeOptions);
     /** @type {Store<T, string | Path>} */
     const valToPetname = {
       ...rawValToPetname,
@@ -356,10 +357,11 @@ export const makeDehydrator = (initialUnnamedCount = 0) => {
     /**
      * @template T
      * @param {string} kind
+     * @param {Partial<StoreOptions>=} storeOptions
      * @returns {Mapping<T>}
      */
-    makeMapping: kind => {
-      const mapping = makeMapping(kind);
+    makeMapping: (kind, storeOptions = undefined) => {
+      const mapping = makeMapping(kind, storeOptions);
       searchOrder.push(kind);
       return mapping;
     },

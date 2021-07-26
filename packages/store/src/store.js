@@ -43,17 +43,6 @@ const assertValue = (value, passableOnly) => {
 };
 
 /**
- * @typedef {Object} StoreOptions
- * @property {boolean=} longLived Which way to optimize. True means that we
- * expect this weakStore to outlive longer than most of its keys, in which
- * case we internally use a `WeakMap`. Otherwise we internally use a `Map`.
- * TODO Once we are happy with a default, mention it here.
- * @property {boolean=} passableOnly transitional. Defaults to falso.
- * But beware the default passableOnly will switch to true and ultimately be
- * retired.
- */
-
-/**
  * Distinguishes between adding a new key (init) and updating or
  * referencing a key (get, set, delete).
  *
