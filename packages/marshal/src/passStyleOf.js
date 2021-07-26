@@ -330,13 +330,13 @@ const checkRemotableProtoOf = (original, check = x => x) => {
     toString: toStringDesc,
     // @ts-ignore https://github.com/microsoft/TypeScript/issues/1863
     [Symbol.toStringTag]: ifaceDesc,
-    ...rest
+    ...restDescs
   } = getOwnPropertyDescriptors(proto);
 
   return (
     check(
-      ownKeys(rest).length === 0,
-      X`Unexpected properties on Remotable Proto ${ownKeys(rest)}`,
+      ownKeys(restDescs).length === 0,
+      X`Unexpected properties on Remotable Proto ${ownKeys(restDescs)}`,
     ) &&
     check(!!passStyleDesc, X`Remotable must have a [PASS_STYLE]`) &&
     check(
@@ -472,12 +472,12 @@ const assertCopySet = val => {
     [PASS_STYLE]: passStyleDesc,
     toString: toStringDesc,
     elements: elementsDesc,
-    ...rest
+    ...restDescs
   } = getOwnPropertyDescriptors(proto);
 
   assert(
-    ownKeys(rest).length === 0,
-    X`Unexpected properties on copySet ${ownKeys(rest)}`,
+    ownKeys(restDescs).length === 0,
+    X`Unexpected properties on copySet ${ownKeys(restDescs)}`,
   );
   assert(!!passStyleDesc, X`copySet must have a [PASS_STYLE]`);
   assert(
@@ -513,12 +513,12 @@ const assertCopyMap = val => {
     toString: toStringDesc,
     keys: keysDesc,
     values: valuesDesc,
-    ...rest
+    ...restDescs
   } = getOwnPropertyDescriptors(proto);
 
   assert(
-    ownKeys(rest).length === 0,
-    X`Unexpected properties on copyMap ${ownKeys(rest)}`,
+    ownKeys(restDescs).length === 0,
+    X`Unexpected properties on copyMap ${ownKeys(restDescs)}`,
   );
   assert(!!passStyleDesc, X`copyMap must have a [PASS_STYLE]`);
   assert(
@@ -552,6 +552,35 @@ const assertCopyMap = val => {
     valuesDesc.value.length,
     X`The keys and values arrays must be the same length: ${val}`,
   );
+};
+
+/** @type {PatternNode} */
+const assertPatternNode = val => {
+  checkTagRecord(val, 'patternNode', assertChecker);
+  const proto = getPrototypeOf(val);
+  assert(
+    proto === null || proto === objectPrototype,
+    X`A patternNode must inherit directly from null or Object.prototype: ${val}`,
+  );
+  const {
+    // @ts-ignore TypeStript cannot index by symbols
+    [PASS_STYLE]: passStyleDesc,
+    toString: toStringDesc,
+    patternKind: patternKindDesc,
+    ..._restDescs
+  } = getOwnPropertyDescriptors(proto);
+
+  assert(!!passStyleDesc, X`patternNode must have a [PASS_STYLE]`);
+  assert(
+    // @ts-ignore TypeScript thinks toString is a function, not a desciptor
+    typeof toStringDesc.value === 'function',
+    X`toString must be a function`,
+  );
+  assert(
+    typeof patternKindDesc.value === 'string',
+    X`toString must be a function`,
+  );
+  // TODO The test of patternNode validation.
 };
 
 /**
