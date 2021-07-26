@@ -192,7 +192,7 @@ test('exceed stack', t => {
   return overflowCrank(t, 'stack');
 });
 
-test('meter decrements', async t => {
+test.skip('meter decrements', async t => {
   const managerType = 'xs-worker';
   const { kernelBundles, dynamicVatBundle, bootstrapBundle } = t.context.data;
   const config = {
