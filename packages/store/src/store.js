@@ -83,18 +83,15 @@ export function makeStore(keyName = 'key', { passableOnly = true } = {}) {
       m.set(key, value);
     },
     get: key => {
-      assertKey(key, passableOnly);
       assertKeyExists(key);
       return m.get(key);
     },
     set: (key, value) => {
-      assertKey(key, passableOnly);
-      assertValue(value, passableOnly);
       assertKeyExists(key);
+      assertValue(value, passableOnly);
       m.set(key, value);
     },
     delete: key => {
-      assertKey(key, passableOnly);
       assertKeyExists(key);
       m.delete(key);
     },

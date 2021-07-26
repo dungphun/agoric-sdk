@@ -97,14 +97,14 @@ test('reject promise keys', t => {
   const s = makeStore('store1');
   t.throws(() => s.init(k, 1), { message: /not comparable/ });
   t.is(s.has(k), false);
-  t.throws(() => s.get(k), { message: /not comparable/ });
-  t.throws(() => s.set(k, 1), { message: /not comparable/ });
-  t.throws(() => s.delete(k), { message: /not comparable/ });
+  t.throws(() => s.get(k), { message: /not found:/ });
+  t.throws(() => s.set(k, 1), { message: /not found/ });
+  t.throws(() => s.delete(k), { message: /not found/ });
 
   const w = makeWeakStore('store1');
   t.throws(() => w.init(k, 1), { message: /only identity-based/ });
   t.is(s.has(k), false);
-  t.throws(() => w.get(k), { message: /only identity-based/ });
-  t.throws(() => w.set(k, 1), { message: /only identity-based/ });
-  t.throws(() => w.delete(k), { message: /only identity-based/ });
+  t.throws(() => w.get(k), { message: /not found/ });
+  t.throws(() => w.set(k, 1), { message: /not found/ });
+  t.throws(() => w.delete(k), { message: /not found/ });
 });

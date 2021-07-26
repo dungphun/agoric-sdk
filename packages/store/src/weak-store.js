@@ -63,18 +63,15 @@ export function makeWeakStore(
       wm.set(key, value);
     },
     get: key => {
-      assertKey(key, passableOnly);
       assertKeyExists(key);
       return wm.get(key);
     },
     set: (key, value) => {
-      assertKey(key, passableOnly);
-      assertValue(value, passableOnly);
       assertKeyExists(key);
+      assertValue(value, passableOnly);
       wm.set(key, value);
     },
     delete: key => {
-      assertKey(key, passableOnly);
       assertKeyExists(key);
       wm.delete(key);
     },
