@@ -10,6 +10,11 @@ const assertKey = (key, passableOnly) => {
   if (passableOnly) {
     harden(key); // TODO: Just a transition kludge. Remove when possible.
     mustBeComparable(key);
+    assert.equal(
+      passStyleOf(key),
+      'remotable',
+      X`Only identity-based keys accepted for now: ${key}`,
+    );
   }
 };
 
@@ -21,6 +26,17 @@ const assertValue = (value, passableOnly) => {
 };
 
 /**
+ * @typedef {Object} StoreOptions
+ * @property {boolean=} longLived Which way to optimize. True means that we
+ * expect this weakStore to outlive longer than most of its keys, in which
+ * case we internally use a `WeakMap`. Otherwise we internally use a `Map`.
+ * TODO Once we are happy with a default, mention it here.
+ * @property {boolean=} passableOnly transitional. Defaults to falso.
+ * But beware the default passableOnly will switch to true and ultimately be
+ * retired.
+ */
+
+/**
  * Distinguishes between adding a new key (init) and updating or
  * referencing a key (get, set, delete).
  *
@@ -29,8 +45,7 @@ const assertValue = (value, passableOnly) => {
  *
  * @template K,V
  * @param {string} [keyName='key'] - the column name for the key
- * @param {Partial<{passableOnly: boolean=true}>=} opt transitional. Beware
- * the default passableOnly will switch to true and ultimately be retired.
+ * @param {Partial<StoreOptions>=} options
  * @returns {Store<K,V>}
  */
 export function makeStore(keyName = 'key', { passableOnly = true } = {}) {
