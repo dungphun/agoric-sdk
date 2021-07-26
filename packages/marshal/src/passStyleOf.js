@@ -244,6 +244,36 @@ export const assertIface = iface => checkIface(iface, assertChecker);
 harden(assertIface);
 
 /**
+ * @param {{ [PASS_STYLE]: string }} tagRecord
+ * @param {PassStyle} passStyle
+ * @param {Checker} [check]
+ * @returns {boolean}
+ */
+const checkTagRecord = (tagRecord, passStyle, check = x => x) => {
+  return (
+    check(
+      typeof tagRecord === 'object',
+      X`A non-object cannot be a tagRecord: ${tagRecord}`,
+    ) &&
+    check(
+      !Array.isArray(tagRecord),
+      X`An srray cannot be a tagRecords: ${tagRecord}`,
+    ) &&
+    check(tagRecord !== null, X`null cannot be a tagRecord`) &&
+    check(
+      PASS_STYLE in tagRecord,
+      X`A tagRecord must have a [PASS_STYLE] property: ${tagRecord}`,
+    ) &&
+    check(
+      tagRecord[PASS_STYLE] === passStyle,
+      X`Expected ${q(passStyle)}, not ${q(
+        tagRecord[PASS_STYLE],
+      )}: ${tagRecord}`,
+    )
+  );
+};
+
+/**
  * @param {any} original
  * @param {Checker} [check]
  * @returns {boolean}
@@ -261,12 +291,7 @@ const checkRemotableProtoOf = (original, check = x => x) => {
   const proto = getPrototypeOf(original);
   if (
     !(
-      check(
-        typeof proto === 'object',
-        X`cannot serialize non-objects like ${proto}`,
-      ) &&
-      check(!Array.isArray(proto), X`Arrays cannot be pass-by-remote`) &&
-      check(proto !== null, X`null cannot be pass-by-remote`) &&
+      checkTagRecord(proto, 'remotable', check) &&
       check(
         // Since we're working with TypeScript's unsound type system, mostly
         // to catch accidents and to provide IDE support, we type arguments
@@ -275,7 +300,7 @@ const checkRemotableProtoOf = (original, check = x => x) => {
         // because *if the declared type were accurate*, then the condition
         // would always return true.
         // @ts-ignore TypeScript assumes what we're trying to check
-        proto !== Object.prototype,
+        proto !== objectPrototype,
         X`Remotables must now be explicitly declared: ${q(original)}`,
       )
     )
@@ -325,10 +350,6 @@ const checkRemotableProtoOf = (original, check = x => x) => {
       X`Unexpected properties on Remotable Proto ${ownKeys(rest)}`,
     ) &&
     check(!!passStyleDesc, X`Remotable must have a [PASS_STYLE]`) &&
-    check(
-      passStyleDesc.value === 'remotable',
-      X`Expected 'remotable', not ${q(passStyleDesc.value)}`,
-    ) &&
     check(
       typeof toStringDesc.value === 'function',
       X`toString must be a function`,
