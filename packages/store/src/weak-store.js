@@ -53,7 +53,7 @@ export function makeWeakStore(
     assert(wm.has(key), X`${q(keyName)} not found: ${key}`);
   return Far('weakStore', {
     has: key => {
-      assertKey(key, passableOnly);
+      // .has is very accepting
       return wm.has(key);
     },
     init: (key, value) => {

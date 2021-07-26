@@ -66,41 +66,41 @@ const assertValue = (value, passableOnly) => {
  * @returns {Store<K,V>}
  */
 export function makeStore(keyName = 'key', { passableOnly = true } = {}) {
-  const store = new Map();
+  const m = new Map();
   const assertKeyDoesNotExist = key =>
-    assert(!store.has(key), X`${q(keyName)} already registered: ${key}`);
+    assert(!m.has(key), X`${q(keyName)} already registered: ${key}`);
   const assertKeyExists = key =>
-    assert(store.has(key), X`${q(keyName)} not found: ${key}`);
+    assert(m.has(key), X`${q(keyName)} not found: ${key}`);
   return Far('store', {
     has: key => {
-      assertKey(key, passableOnly);
-      return store.has(key);
+      // .has is very accepting
+      return m.has(key);
     },
     init: (key, value) => {
       assertKey(key, passableOnly);
       assertValue(value, passableOnly);
       assertKeyDoesNotExist(key);
-      store.set(key, value);
+      m.set(key, value);
     },
     get: key => {
       assertKey(key, passableOnly);
       assertKeyExists(key);
-      return store.get(key);
+      return m.get(key);
     },
     set: (key, value) => {
       assertKey(key, passableOnly);
       assertValue(value, passableOnly);
       assertKeyExists(key);
-      store.set(key, value);
+      m.set(key, value);
     },
     delete: key => {
       assertKey(key, passableOnly);
       assertKeyExists(key);
-      store.delete(key);
+      m.delete(key);
     },
-    keys: () => Array.from(store.keys()),
-    values: () => Array.from(store.values()),
-    entries: () => Array.from(store.entries()),
+    keys: () => Array.from(m.keys()),
+    values: () => Array.from(m.values()),
+    entries: () => Array.from(m.entries()),
   });
 }
 harden(makeStore);
