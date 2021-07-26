@@ -92,27 +92,18 @@ test('store', t => {
   check(t, 'weak', () => Far('handle', {}));
 });
 
-test('reject unmarked empty objects', t => {
-  // Older client code used harden({}) to create a "handle" that served as an
-  // otherwise-empty key for a store/weakstore, but ticket #2018 changes
-  // marshal to treat unmarked empty objects as pass-by-copy, so they won't
-  // retain identity across messages, breaking old-style handles in
-  // surprising ways (key collisions). New client code should use Far()
-  // instead, which arrives here as an object with a non-empty
-  // getInterfaceOf(). To catch older clients that need to be updated, we
-  // reject the use of plain empty objects as keys.
-
+test('reject promise keys', t => {
   const k = harden(Promise.resolve());
   const s = makeStore('store1');
   t.throws(() => s.init(k, 1), { message: /not comparable/ });
-  t.throws(() => s.has(k), { message: /not comparable/ });
+  t.is(s.has(k), false);
   t.throws(() => s.get(k), { message: /not comparable/ });
   t.throws(() => s.set(k, 1), { message: /not comparable/ });
   t.throws(() => s.delete(k), { message: /not comparable/ });
 
   const w = makeWeakStore('store1');
   t.throws(() => w.init(k, 1), { message: /only identity-based/ });
-  t.throws(() => w.has(k), { message: /only identity-based/ });
+  t.is(s.has(k), false);
   t.throws(() => w.get(k), { message: /only identity-based/ });
   t.throws(() => w.set(k, 1), { message: /only identity-based/ });
   t.throws(() => w.delete(k), { message: /only identity-based/ });
