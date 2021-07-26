@@ -111,9 +111,9 @@ test('reject unmarked empty objects', t => {
   t.throws(() => s.delete(k), { message: /not comparable/ });
 
   const w = makeWeakStore('store1');
-  t.throws(() => w.init(k, 1), { message: /not comparable/ });
-  t.throws(() => w.has(k), { message: /not comparable/ });
-  t.throws(() => w.get(k), { message: /not comparable/ });
-  t.throws(() => w.set(k, 1), { message: /not comparable/ });
-  t.throws(() => w.delete(k), { message: /not comparable/ });
+  t.throws(() => w.init(k, 1), { message: /only identity-based/ });
+  t.throws(() => w.has(k), { message: /only identity-based/ });
+  t.throws(() => w.get(k), { message: /only identity-based/ });
+  t.throws(() => w.set(k, 1), { message: /only identity-based/ });
+  t.throws(() => w.delete(k), { message: /only identity-based/ });
 });

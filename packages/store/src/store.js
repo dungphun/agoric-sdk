@@ -10,11 +10,28 @@ const assertKey = (key, passableOnly) => {
   if (passableOnly) {
     harden(key); // TODO: Just a transition kludge. Remove when possible.
     mustBeComparable(key);
-    assert.equal(
-      passStyleOf(key),
-      'remotable',
-      X`Only identity-based keys accepted for now: ${key}`,
-    );
+    const passStyle = passStyleOf(key);
+    switch (passStyle) {
+      case 'bigint':
+      case 'boolean':
+      case 'null':
+      case 'number':
+      case 'string':
+      case 'symbol':
+      case 'undefined':
+      case 'remotable': {
+        return;
+      }
+      case 'copyArray':
+      case 'copyRecord':
+      case 'copyError': {
+        assert.fail(X`composite keys not yet allowed: ${key}`);
+      }
+      // case 'promise': is precluded by `mustBeComparable` above
+      default: {
+        assert.fail(X`unexpected passStyle ${passStyle}`);
+      }
+    }
   }
 };
 
